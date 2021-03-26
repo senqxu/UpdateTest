@@ -18,9 +18,9 @@ public class BowlingGame {
             Frame frame = frames.get(index);
             int baseScore = frame.getScore();
             int extraScore = getExtraScore(index);
-            System.out.println("extraScore = " + extraScore);
+            //System.out.println("extraScore = " + extraScore);
             score += baseScore + extraScore;
-            System.out.println("extraScore = " + baseScore);
+            //System.out.println("extraScore = " + baseScore);
         }
         return score;
     }
@@ -28,9 +28,23 @@ public class BowlingGame {
     private ArrayList<Frame> parse(String bowlingCode) {
         String[] framesAndExtraBalls = bowlingCode.split("\\|\\|");
         String[] framesStr = framesAndExtraBalls[0].split("\\|");
-        String[] extraBallsStr = framesAndExtraBalls[1].split("");
-        ArrayList<Frame> frames = new ArrayList<Frame>();
 
+        String[] extraBallsStr = framesAndExtraBalls[1].split("");
+
+
+        ArrayList<Frame> frames = new ArrayList<Frame>();
+        addFrames(framesStr, frames);
+        if (hasExtraBalls(framesAndExtraBalls)) {
+            addExtraBalls(extraBallsStr, frames);
+        }
+        return frames;
+    }
+
+    private boolean hasExtraBalls(String[] framesAndExtraBalls) {
+        return framesAndExtraBalls.length == 2;
+    }
+
+    private void addFrames(String[] framesStr, ArrayList<Frame> frames) {
         for (int index = 0; index < Frame_COUNT; index++) {
             List<Integer> balls = new ArrayList<Integer>();
             String ballStr = framesStr[index];
@@ -46,18 +60,21 @@ public class BowlingGame {
             }
             frames.add(new Frame(balls));
         }
+    }
 
+    private void addExtraBalls(String[] extraBallsStr, ArrayList<Frame> frames) {
         for (String extraBall : extraBallsStr) {
             List<Integer> extraBalls = new ArrayList<Integer>();
             extraBalls.add(getBottleCount(extraBall));
             frames.add(new Frame(extraBalls));
         }
-        return frames;
     }
 
     private Integer getBottleCount(String framesStr) {
         if (framesStr.equalsIgnoreCase("X"))
             return 10;
+        if (framesStr.equals("-"))
+            return 0;
         return Integer.valueOf(framesStr);
     }
 
@@ -75,11 +92,12 @@ public class BowlingGame {
 
     private List<Integer> getExtraBalls(List<Frame> frames, int index) {
         List<Integer> balls = new ArrayList<Integer>();
-        balls.addAll(frames.get(index + 1).getBalls());
-        if (frames.size() == 12) {
-
+        if (frames.size() == 11) {
+            balls.addAll(frames.get(index + 1).getBalls());
+        } else if (frames.size() == 12) {
+            balls.addAll(frames.get(index + 1).getBalls());
+            balls.addAll(frames.get(index + 2).getBalls());
         }
-        balls.addAll(frames.get(index + 2).getBalls());
         return balls;
     }
 }

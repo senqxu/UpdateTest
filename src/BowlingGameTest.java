@@ -22,4 +22,10 @@ public class BowlingGameTest {
         String bowlingCode = "9-|9-|9-|9-|9-|9-|9-|9-|9-|9-||"; //90
         assertEquals(90, new BowlingGame().getBowlingScoere(bowlingCode));
     }
+
+    @Test
+    public void test_other_situation() throws Exception{
+        String bowlingCode = "X|7/|9-|X|-8|8/|-6|X|X||81"; //167
+        assertEquals(167, new BowlingGame().getBowlingScoere(bowlingCode));
+    }
 }
